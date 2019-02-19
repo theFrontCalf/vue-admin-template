@@ -9,7 +9,7 @@
       highlight-current-row>
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.$index + 1 + listQuery.limit * (listQuery.page - 1) }}
         </template>
       </el-table-column>
       <el-table-column label="Title">
@@ -39,13 +39,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="fetchData" />
   </div>
 </template>
 
 <script>
 import { getList } from '@/api/table'
+import Pagination from '@/components/Pagination'
 
 export default {
+  components: { Pagination },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -59,7 +62,12 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: true,
+      total: 0,
+      listQuery: {
+        page: 1,
+        limit: 10
+      }
     }
   },
   created() {
@@ -69,10 +77,15 @@ export default {
     fetchData() {
       this.listLoading = true
       getList(this.listQuery).then(response => {
-        this.list = response.data.items
+        // this.list = response.data.items
+        this.total = response.data.items.length
+        this.list = response.data.items.slice(this.listQuery.limit*(this.listQuery.page - 1),this.listQuery.limit * this.listQuery.page)    //模拟分页效果
         this.listLoading = false
       })
-    }
+    },
+    // getChildParam(childVal) {
+    //   console.log(childVal,this.listQuery)
+    // }
   }
 }
 </script>
