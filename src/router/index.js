@@ -27,21 +27,21 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('@/views/404'), hidden: true },
 
   {
-    path: '/',
+    path: '',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
+    redirect: 'dashboard',
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: () => import('@/views/dashboard/index'),
+      name: 'Dashboard',
+      meta: { title: 'Dashboard', icon: 'dashboard', noCache: true }
     }]
   },
 
   {
     path: '/example',
     component: Layout,
-    redirect: '/example/table',
+    redirect: 'noredirect',
     name: 'Example',
     meta: { title: 'Example', icon: 'example' },
     children: [
@@ -76,7 +76,7 @@ export const constantRouterMap = [
   {
     path: '/nested',
     component: Layout,
-    redirect: '/nested/menu1',
+    redirect: 'noredirect',
     name: 'Nested',
     meta: {
       title: 'Nested',
@@ -87,6 +87,7 @@ export const constantRouterMap = [
         path: 'menu1',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
         name: 'Menu1',
+        redirect: 'noredirect',
         meta: { title: 'Menu1' },
         children: [
           {
@@ -99,6 +100,7 @@ export const constantRouterMap = [
             path: 'menu1-2',
             component: () => import('@/views/nested/menu1/menu1-2'),
             name: 'Menu1-2',
+            redirect: 'noredirect',
             meta: { title: 'Menu1-2' },
             children: [
               {
@@ -125,6 +127,7 @@ export const constantRouterMap = [
       },
       {
         path: 'menu2',
+        name: 'Menu2',
         component: () => import('@/views/nested/menu2/index'),
         meta: { title: 'menu2' }
       }
