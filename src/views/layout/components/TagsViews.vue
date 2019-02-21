@@ -9,12 +9,15 @@
             tag="span"
             class="tags-view-item"
         >
-            {{ tag.title }}
+            {{ generateTitle(tag.title) }}
             <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"></span>
         </router-link>
     </div>
 </template>
 <script>
+
+import { generateTitle } from '@/utils/i18n'
+
 export default {
     data() {
         return {}
@@ -33,6 +36,7 @@ export default {
         this.addViewTags()
     },
     methods: {
+        generateTitle,
         addViewTags() {
             const { name } = this.$route
             if(name) {

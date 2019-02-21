@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     iconName() {
-      return `#icon-${this.iconClass}`
+      return `#icon-${this.iconClass}` //每个图标的id在webpack.base.config中配置
     },
     svgClass() {
       if (this.className) {
