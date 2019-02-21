@@ -11,5 +11,8 @@ export default {
     navbar: {
         dashboard: 'Dashboard',
         logOut: 'Log Out'
+    },
+    message: {
+        SwitchLanguageSuccess: 'Switch Language Success!'
     }
 }

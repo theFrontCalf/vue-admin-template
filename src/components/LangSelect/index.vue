@@ -10,6 +10,7 @@
     </el-dropdown>
 </template>
 <script>
+
 export default {
     computed: {
         language() {
@@ -21,7 +22,7 @@ export default {
             this.$i18n.locale = lang
             this.$store.dispatch('SetLanguage', lang)
             this.$message({
-                message: 'Switch Language Success!',
+                message: this.$t('message.SwitchLanguageSuccess'),
                 type: 'success'
             })
         }

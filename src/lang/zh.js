@@ -11,5 +11,8 @@ export default {
     navbar: {
         dashboard: '首页',
         logOut: '退出'
+    },
+    message: {
+        SwitchLanguageSuccess: '切换语言成功！'
     }
 }
