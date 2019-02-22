@@ -1,7 +1,8 @@
 
 <template>
   <!-- eslint-disable vue/require-component-is -->
-  <component v-bind="linkProps(to)">
+  <!-- 不直接绑定 is 会导致校验报错，返回的is决定渲染的元素或组件，其他属性为对应元素的属性值 -->
+  <component v-bind="linkProps(to)">  
     <slot/>
   </component>
 </template>
