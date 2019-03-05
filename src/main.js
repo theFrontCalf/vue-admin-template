@@ -17,9 +17,15 @@ import i18n from './lang'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import * as filters from './filters'  // global filters
+
 Vue.use(ElementUI, { 
   i18n: (key, value) => i18n.t(key, value)
- })
+})
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 Vue.config.productionTip = false
 

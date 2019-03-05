@@ -9,6 +9,29 @@
   display: none;
 }
 
+.status-col {
+  .cell {
+    padding: 0 10px;
+    text-align: center;
+
+    .el-tag {
+      margin-right: 0px;
+    }
+  }
+}
+.small-padding {
+  .cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+.fixed-width {
+  .el-button--mini {
+    padding: 7px 10px;
+    width: 60px;
+  }
+}
+
 //暂时性解决diolag 问题 https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
   transform: none;
