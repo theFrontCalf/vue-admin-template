@@ -68,7 +68,34 @@
 
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
         
-        
+        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisable">
+            <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width:400px; margin-left:50px;">
+                <el-form-item :label="$t('table.type')" prop="type">
+                    <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
+                        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('table.date')" prop="timestamp">
+                    <el-date-picker type="datetime" v-model="temp.timestamp" placeholder="Place pick a date" />
+                </el-form-item>
+                <el-form-item :label="$t('table.title')" prop="title">
+                    <el-input v-model="temp.title" />
+                </el-form-item>
+                <el-form-item :label="$t('table.status')">
+                    <el-select v-model="temp.status" class="filter-item" placeholder="Place select">
+                        <el-option v-for="item in statusOptions" :key="item" :value="item" :label="item" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('table.importance')">
+                    <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
+                </el-form-item>
+            </el-form>
+            <div class="dialog-footer" slot="footer">
+                <el-button @click="dialogFormVisable = false">{{ $t('table.cancel') }}</el-button>
+                <el-button @click="dialogStatus==='create'?createData():updateData()" type="primary">{{ $t('table.confirm') }}</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -103,6 +130,26 @@ export default {
         { key: "+id", label: "ID Ascending" },
         { key: "-id", label: "ID Descending" }
       ],
+      textMap: {
+          update: 'Edit',
+          create: 'Create'
+      },
+      rules: {
+          type: [{ required: true, message: 'type is required', trigger: 'change' }],
+          timestamp: [{ required: true, message: 'timestamp is required', trigger: 'change', type: 'date' }],
+          title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+      },
+      statusOptions: ['published', 'draft', 'deleted'],
+      dialogFormVisable: false,
+      dialogStatus: '',
+      temp: {
+          id: undefined,
+          importance: 1,
+          timestamp: new Date(),
+          title: '',
+          type: '',
+          status: 'published'
+      },
       listQuery: {
         importance: undefined,
         title: undefined,
@@ -126,10 +173,48 @@ export default {
         this.listQuery.page = 1
         this.getList()
     },
-    handleCreate() {},
+    createData() {
+        this.updateData(); //过程一样，偷个懒
+    },
+    updateData() {
+        this.$refs['dataForm'].validate((valid) => {
+            if(valid){
+                this.dialogFormVisable = false
+                setTimeout(() => {
+                    this.$notify({
+                        title: '成功',
+                        message: '假装修改成功',
+                        type: 'success',
+                        duration: 1500
+                    })
+                }, 200);
+            }
+        })
+    },
+    handleCreate() {
+        this.temp = {  //重置一下
+            id: undefined,
+            importance: 1,
+            timestamp: new Date(),
+            title: '',
+            type: '',
+            status: 'published'
+        }
+        this.dialogStatus = 'create'
+        this.dialogFormVisable = true
+        this.$nextTick(() => {
+            this.$refs['dataForm'].clearValidate();
+        })
+    },
+    handleModifyStatus(row, status) {
+        this.$message({
+            message: '操作成功',
+            type: 'success'
+        })
+        row.status = status
+    },
     handleDownload() {},
-    sortChange(cloumn, prop, order) {
-        // console.log(cloumn, prop, order)
+    sortChange({cloumn, prop, order}) {
         if(prop == 'id') {
             this.sortByID(order)
         }
@@ -142,12 +227,22 @@ export default {
         }
         this.handleFilter()
     },
+    handleUpdate(row) {
+        this.temp = Object.assign({}, row)
+        this.temp.timestamp = new Date(this.temp.timestamp)
+        this.dialogFormVisable = true
+        this.dialogStatus = 'update'
+        this.$nextTick(() => {
+            this.$refs['dataForm'].clearValidate();
+        })
+    },
     getList() {
         this.listLoading = true;
         axios({
             url: 'https://easy-mock.com/mock/5c739d010cf5d2150d52cdec/vue-admin-template/table/list',
             params: this.listQuery
         }).then(response => {
+            if(this.listQuery.sort == '-id') response.data.items.reverse(); //模拟递增递减
             this.list = response.data.items.slice(this.listQuery.limit*(this.listQuery.page - 1),this.listQuery.limit * this.listQuery.page)
             this.total = response.data.total
 
@@ -172,39 +267,6 @@ export default {
     }
   }
 };
-
-var wuu = [
-    {id:1000,name:'cn'},
-	{id:1001,name:'cn'},
-    {id:1002,name:'usa'},
-    {id:1003,name:'usa'},
-    {id:1004,name:'jp'},
-    {id:1005,name:'jp'},
-]
-
-var target = [
-    {
-		name:'cn',
-		val: [
-            {id:1000,name:'cn'},
-			{id:1001,name:'cn'},
-		]
-	},
-	{
-		name:'usa',
-		val: [
-            {id:1002,name:'usa'},
-			{id:1003,name:'usa'},
-		]
-	},
-	{
-		name:'jp',
-		val: [
-            {id:1004,name:'jp'},
-			{id:1005,name:'jp'},
-		]
-	},
-]
 </script>
 
 
